@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import NavBar from "./components/NavBar";
 import Payments from "./pages/Payments";
+import UserProfile from "./pages/Userprofile";
 
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
       <Route path="/" element={<Home/>}/>
       <Route path="/register" element={<Register/>}/>
       <Route path="/login" element={<Login/>}/>
+      <Route path="/userProfile/:id" element={<UserProfile/>} />
     </Routes>
   </Router>
      

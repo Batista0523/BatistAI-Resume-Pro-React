@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 interface LoginFormData {
   email: string;
@@ -13,6 +15,9 @@ function Login() {
 
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+
+  const { login } = useAuth();
+  const navigate = useNavigate();
   const url = import.meta.env.VITE_BASE_URL;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,7 +31,6 @@ function Login() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     setError(null);
     setSuccess(null);
 
@@ -36,10 +40,7 @@ function Login() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password,
-        }),
+        body: JSON.stringify(formData),
       });
 
       const data = await response.json();
@@ -48,13 +49,15 @@ function Login() {
         throw new Error(data?.error || "Login failed");
       }
 
+      login(data.payload); 
+      const userId = data.payload.id;
       setSuccess("Logged in successfully");
 
+     
+      navigate(`/userProfile/${userId}`);
 
-      setFormData({
-        email: "",
-        password: "",
-      });
+      setFormData({ email: "", password: "" });
+
     } catch (err: any) {
       setError(err.message || "Something went wrong");
     }
@@ -68,7 +71,7 @@ function Login() {
       {success && <div className="alert alert-success">{success}</div>}
 
       <form onSubmit={handleSubmit}>
-        {/* Email input */}
+
         <div className="mb-3">
           <label className="form-label">Email Address</label>
           <input
@@ -81,7 +84,7 @@ function Login() {
           />
         </div>
 
-        {/* Password input */}
+ 
         <div className="mb-3">
           <label className="form-label">Password</label>
           <input

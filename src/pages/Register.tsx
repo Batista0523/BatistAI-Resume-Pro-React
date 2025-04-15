@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 interface RegisterFormData {
   full_name: string;
   email: string;
@@ -19,7 +19,7 @@ function Register() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const url = import.meta.env.VITE_BASE_URL;
-const navigate = useNavigate()
+  const navigate = useNavigate();
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
 
@@ -58,9 +58,9 @@ const navigate = useNavigate()
       if (!response.ok) {
         throw new Error(data?.error || "Registration failed");
       }
-      
-      setSuccess("User register successfully");
-    
+
+      setSuccess("User register successfully Redirecting to Login page");
+
       setFormData({
         full_name: "",
         email: "",
@@ -68,7 +68,9 @@ const navigate = useNavigate()
         confirmPassword: "",
         is_premium: false,
       });
-      navigate("/login")
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
     } catch (err: any) {
       setError(err.message || "Something went wrong");
     }
@@ -78,13 +80,13 @@ const navigate = useNavigate()
     <div className="container mt-5" style={{ maxWidth: "500px" }}>
       <h2 className="mb-4 text-center">Register</h2>
 
-      {/* Mostramos mensaje de error o éxito si existen */}
+
       {error && <div className="alert alert-danger">{error}</div>}
       {success && <div className="alert alert-success">{success}</div>}
 
-      {/* Formulario de registro */}
+
       <form onSubmit={handleSubmit}>
-        {/* Campo para nombre completo */}
+   
         <div className="mb-3">
           <label className="form-label">Full Name</label>
           <input
@@ -97,7 +99,7 @@ const navigate = useNavigate()
           />
         </div>
 
-        {/* Campo para email */}
+
         <div className="mb-3">
           <label className="form-label">Email Address</label>
           <input
@@ -110,7 +112,7 @@ const navigate = useNavigate()
           />
         </div>
 
-        {/* Campo para contraseña */}
+ 
         <div className="mb-3">
           <label className="form-label">Password</label>
           <input
@@ -124,7 +126,6 @@ const navigate = useNavigate()
           />
         </div>
 
-        {/* Campo para confirmar contraseña */}
         <div className="mb-3">
           <label className="form-label">Confirm Password</label>
           <input
@@ -138,25 +139,13 @@ const navigate = useNavigate()
           />
         </div>
 
-        {/* Checkbox para seleccionar si quiere acceso premium */}
-        <div className="form-check mb-3">
-          {/* <input
-          className="form-check-input"
-          type="checkbox"
-          name="is_premium"
-          checked={formData.is_premium}
-          onChange={handleChange}
-          id="is_premium"
-        />
-        <label className="form-check-label" htmlFor="is_premium">
-          I want premium access
-        </label> */}
-        </div>
-
-        {/* Botón para enviar el formulario */}
+      
+  
+   
         <button type="submit" className="btn btn-primary w-100">
           Register
         </button>
+        
       </form>
     </div>
   );
