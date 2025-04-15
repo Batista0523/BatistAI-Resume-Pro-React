@@ -5,7 +5,8 @@ import Register from "./pages/Register";
 import NavBar from "./components/NavBar";
 import Payments from "./pages/Payments";
 import UserProfile from "./pages/Userprofile";
-
+import ResumeForm from "./components/ResumeForm";
+import ResumeByUser from "./components/ResumeByUser";
 
 function App() {
 
@@ -19,6 +20,8 @@ function App() {
       <Route path="/register" element={<Register/>}/>
       <Route path="/login" element={<Login/>}/>
       <Route path="/userProfile/:id" element={<UserProfile/>} />
+      <Route path="/creatResume" element={<ResumeForm/>} />
+      <Route path="/resumeByUser/:id" element={<ResumeByUser/>} />
     </Routes>
   </Router>
      
