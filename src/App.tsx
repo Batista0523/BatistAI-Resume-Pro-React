@@ -20,7 +20,7 @@ function App() {
       <Route path="/register" element={<Register/>}/>
       <Route path="/login" element={<Login/>}/>
       <Route path="/userProfile/:id" element={<UserProfile/>} />
-      <Route path="/creatResume" element={<ResumeForm/>} />
+      <Route path="/createResume" element={<ResumeForm/>} />
       <Route path="/resumeByUser/:id" element={<ResumeByUser/>} />
     </Routes>
   </Router>

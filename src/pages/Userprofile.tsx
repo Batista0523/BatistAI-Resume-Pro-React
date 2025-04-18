@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { FaUserCircle, FaEdit, FaTrophy } from "react-icons/fa";
+import ResumeByUser from "../components/ResumeByUser";
 
 interface UserProfile {
   id: number;
@@ -59,46 +60,56 @@ const UserProfile = () => {
   }
 
   return (
-    <div className="container mt-5">
-      <div className="d-flex justify-content-center">
-        <div className="card shadow p-4" style={{ width: "80%" }}>
-          <div className="text-center">
-            <div className="mb-3">
-          
-              <FaUserCircle size={150} className="text-muted" />
-            </div>
-            <h2 className="mb-3">{user?.full_name}</h2>
-           
-           
-
-            <div className="mb-4">
-              {user?.is_premium ? (
-                <span className="badge bg-success">Premium Member</span>
-              ) : (
-                <span className="badge bg-warning">Basic Member</span>
-              )}
-            </div>
-
-            <p><strong>Email:</strong> {user?.email}</p>
-            <p><strong>Account Created:</strong> {user?.created_at}</p>
-
-            <div className="mt-4 d-flex justify-content-between">
-              <Link to="/edit-profile" className="btn btn-primary d-flex align-items-center">
-                <FaEdit className="me-2" /> Edit Profile
-              </Link>
-              {!user?.is_premium && (
-                <button className="btn btn-danger d-flex align-items-center">
-                  <FaTrophy className="me-2" /> Upgrade to Premium
-                </button>
-              )}
-            </div>
-            <Link to='/creatResume' >Create Your Resume</Link>
-            <br />
-            <Link to={`/resumeByUser/${user?.id}`} >See Your resume</Link>
+    <div className="container my-5">
+    <div className="d-flex justify-content-center">
+      <div className="card shadow-lg border-0 p-4 w-100" style={{ maxWidth: "800px" }}>
+        <div className="text-center mb-4">
+          <FaUserCircle size={120} className="text-secondary mb-3" />
+          <h2 className="fw-semibold">{user?.full_name}</h2>
+          <div className="my-2">
+            {user?.is_premium ? (
+              <span className="badge bg-success fs-6 px-3 py-2">🌟 Premium Member</span>
+            ) : (
+              <span className="badge bg-warning text-dark fs-6 px-3 py-2">🔓 Basic Member</span>
+            )}
           </div>
+        </div>
+  
+        <hr />
+  
+        <div className="mb-3">
+          <p className="mb-1">
+            <strong>Email:</strong> {user?.email}
+          </p>
+          <p className="mb-0">
+            <strong>Account Created:</strong> {user?.created_at}
+          </p>
+        </div>
+  
+        <hr />
+  
+  
+        <div className="d-flex flex-wrap gap-3 justify-content-center">
+          <Link to="/edit-profile" className="btn btn-outline-primary d-flex align-items-center px-4">
+            <FaEdit className="me-2" /> Edit Profile
+          </Link>
+          {!user?.is_premium && (
+            <button className="btn btn-warning text-dark d-flex align-items-center px-4">
+              <FaTrophy className="me-2" /> Upgrade to Premium
+            </button>
+          )}
+          <Link to="/createResume" className="btn btn-success d-flex align-items-center px-4 fw-bold">
+            ✍️ Create Your Resume
+          </Link>
         </div>
       </div>
     </div>
+  
+    <div className="mt-5">
+      <ResumeByUser />
+    </div>
+  </div>
+  
   );
 };
 
