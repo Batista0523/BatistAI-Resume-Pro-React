@@ -7,6 +7,7 @@ import Payments from "./pages/Payments";
 import UserProfile from "./pages/Userprofile";
 import ResumeForm from "./components/ResumeForm";
 import ResumeByUser from "./components/ResumeByUser";
+import CheckoutForm from "./pages/CheckoutForm";
 
 function App() {
 
@@ -22,6 +23,7 @@ function App() {
       <Route path="/userProfile/:id" element={<UserProfile/>} />
       <Route path="/createResume" element={<ResumeForm/>} />
       <Route path="/resumeByUser/:id" element={<ResumeByUser/>} />
+      <Route path="/payments" element={<CheckoutForm/>} />
     </Routes>
   </Router>
      

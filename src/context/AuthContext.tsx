@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useState, ReactNode } from "react";
 
 interface User {
@@ -6,7 +5,8 @@ interface User {
   email: string;
   full_name?: string;
   password_hash: string;
-  created_at: string
+  created_at: string;
+  is_premium: boolean;
 }
 
 interface AuthContextType {
@@ -14,6 +14,7 @@ interface AuthContextType {
   user: User | null;
   login: (userData: User) => void;
   logout: () => void;
+  updateUserPremiumStatus: (isPremium: boolean) => void; // Function to update premium status
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -29,9 +30,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(null);
   };
 
+ 
+  const updateUserPremiumStatus = (isPremium: boolean) => {
+    if (user) {
+      setUser({
+        ...user,
+        is_premium: isPremium,
+      });
+    }
+  };
+
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated: !!user, user, login, logout }}
+      value={{
+        isAuthenticated: !!user,
+        user,
+        login,
+        logout,
+        updateUserPremiumStatus, 
+      }}
     >
       {children}
     </AuthContext.Provider>

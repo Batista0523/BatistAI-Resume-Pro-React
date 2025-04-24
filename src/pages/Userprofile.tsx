@@ -20,6 +20,7 @@ const UserProfile = () => {
   const apiUrl = import.meta.env.VITE_BASE_URL;
 
   useEffect(() => {
+
     const fetchUserData = async () => {
       try {
         const response = await fetch(`${apiUrl}/users/${id}`);
@@ -94,9 +95,13 @@ const UserProfile = () => {
             <FaEdit className="me-2" /> Edit Profile
           </Link>
           {!user?.is_premium && (
+            <Link to='/payments'>
             <button className="btn btn-warning text-dark d-flex align-items-center px-4">
+              
+              
               <FaTrophy className="me-2" /> Upgrade to Premium
             </button>
+              </Link>
           )}
           <Link to="/createResume" className="btn btn-success d-flex align-items-center px-4 fw-bold">
             ✍️ Create Your Resume
