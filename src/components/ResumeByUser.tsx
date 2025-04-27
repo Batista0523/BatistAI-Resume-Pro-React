@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import html2pdf from "html2pdf.js";
-import { Link } from "react-router-dom";
 import axios from "axios";
-
+import { useNavigate } from "react-router-dom";
 interface Resume {
   id: number;
   user_id: number;
@@ -13,6 +12,7 @@ interface Resume {
     suggestions: string[];
   };
   created_at: string;
+  isOptimizing?: boolean;
 }
 
 function ResumeByUser() {
@@ -21,9 +21,9 @@ function ResumeByUser() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeResumeId, setActiveResumeId] = useState<number | null>(null);
-
+  const [template, setTemplate] = useState<"classic" | "modern">("classic");
   const url = import.meta.env.VITE_BASE_URL;
-
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchResumeDataByUser = async () => {
       if (!user?.id) return;
@@ -48,7 +48,9 @@ function ResumeByUser() {
   }, [user?.id, url]);
 
   const handleDelete = async (id: number) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this resume? ❌");
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this resume? ❌"
+    );
     if (!confirmDelete) return;
 
     try {
@@ -66,7 +68,7 @@ function ResumeByUser() {
   };
 
   const downloadResume = (resumeId: number) => {
-    const element = document.getElementById(`resume-cv-${resumeId}`);
+    const element = document.getElementById(`resume-cv-content-${resumeId}`);
     if (!element) return;
 
     html2pdf()
@@ -89,9 +91,15 @@ function ResumeByUser() {
       skills: "",
     };
 
-    const summaryMatch = text.match(/(?:Summary|Profile|Objective)\s*[:\-]?\s*([\s\S]*?)(?=(Experience|Education|Skills|$))/i);
-    const experienceMatch = text.match(/Experience\s*[:\-]?\s*([\s\S]*?)(?=(Education|Skills|$))/i);
-    const educationMatch = text.match(/Education\s*[:\-]?\s*([\s\S]*?)(?=(Skills|$))/i);
+    const summaryMatch = text.match(
+      /(?:Summary|Profile|Objective)\s*[:\-]?\s*([\s\S]*?)(?=(Experience|Education|Skills|$))/i
+    );
+    const experienceMatch = text.match(
+      /Experience\s*[:\-]?\s*([\s\S]*?)(?=(Education|Skills|$))/i
+    );
+    const educationMatch = text.match(
+      /Education\s*[:\-]?\s*([\s\S]*?)(?=(Skills|$))/i
+    );
     const skillsMatch = text.match(/Skills\s*[:\-]?\s*([\s\S]*)/i);
 
     if (summaryMatch) sections.summary = summaryMatch[1].trim();
@@ -105,38 +113,51 @@ function ResumeByUser() {
   const optimizeResumeAI = async (resumeId: number) => {
     if (!user?.is_premium) {
       alert("Please become Premium to use this feature");
+      navigate("/payments");
       return;
     }
 
-    const resumeToOptimize = resumes.find((resume) => resume.id === resumeId);
+    const resumeToOptimize = resumes.find((r) => r.id === resumeId);
     if (!resumeToOptimize) return;
 
+    setResumes((prev) =>
+      prev.map((resume) =>
+        resume.id === resumeId ? { ...resume, isOptimizing: true } : resume
+      )
+    );
+
     try {
-      const response = await axios.post(`${url}/optimize`, {
-        resume: resumeToOptimize.original_text,
-        userId: user.id,
+      const response = await axios.post(`${url}/resumes/${resumeId}/optimize`, {
+        original_text: resumeToOptimize.original_text,
       });
 
-      if (response.data.optimizedResume) {
+      if (response.data.success) {
         setResumes((prev) =>
           prev.map((resume) =>
             resume.id === resumeId
               ? {
                   ...resume,
-                  optimized_text: response.data.optimizedResume,
-                  feedback: response.data.feedback,
+                  optimized_text: response.data.optimized_text,
+                  feedback: response.data.feedback || {},
+                  isOptimizing: false,
                 }
               : resume
           )
         );
         setActiveResumeId(resumeId);
-        alert("✅ Resume optimized successfully!");
+        alert("✅ Resume optimized and updated!");
       } else {
-        alert("❌ Failed to optimize resume.");
+        alert("❌ Optimization failed.");
       }
     } catch (err) {
       console.error("Error optimizing resume:", err);
       alert("❌ Internal error optimizing resume.");
+    } finally {
+      setResumes((prev) =>
+        prev.map((resume) =>
+          resume.id === resumeId ? { ...resume, isOptimizing: false } : resume
+        )
+      );
     }
   };
 
@@ -148,9 +169,24 @@ function ResumeByUser() {
     <div className="container mt-5 p-4">
       <h2 className="text-center mb-4">📄 Your Resumes</h2>
 
+      <div className="mb-4 text-center">
+        <label className="me-2 fw-bold">Choose Template:</label>
+        <select
+          className="form-select w-auto d-inline-block"
+          value={template}
+          onChange={(e) => setTemplate(e.target.value as "classic" | "modern")}
+        >
+          <option value="classic"> Classic</option>
+          <option value="modern"> Modern</option>
+        </select>
+      </div>
+
       {resumes.map((resume) => {
-        const isOptimizedView = activeResumeId === resume.id && resume.optimized_text;
-        const text = isOptimizedView ? resume.optimized_text! : resume.original_text;
+        const isOptimizedView =
+          activeResumeId === resume.id && resume.optimized_text;
+        const text = isOptimizedView
+          ? resume.optimized_text!
+          : resume.original_text;
         const { summary, experience, education, skills } = parseSections(text);
 
         return (
@@ -159,66 +195,72 @@ function ResumeByUser() {
             id={`resume-cv-${resume.id}`}
             className="p-5 mb-5 shadow rounded"
             style={{
-              fontFamily: "'Helvetica Neue', sans-serif",
-              backgroundColor: "#fefefe",
+              fontFamily:
+                template === "classic" ? "Georgia, serif" : "Arial, sans-serif",
+              backgroundColor: template === "classic" ? "#fff" : "#f9f9f9",
               border: "1px solid #ddd",
               maxWidth: "8.5in",
               margin: "0 auto",
               color: "#333",
             }}
           >
-            <div className="d-flex justify-content-between align-items-center mb-3">
-              <h2 className="fw-bold text-primary">{user.full_name}</h2>
-              <button className="btn btn-outline-secondary" onClick={() => downloadResume(resume.id)}>
-                📥 Download PDF
-              </button>
+            <div id={`resume-cv-content-${resume.id}`}>
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <h2 className="fw-bold text-primary">{user.full_name}</h2>
+              </div>
+              <hr />
+
+              <section className="mb-4">
+                <h5 className="text-secondary border-bottom pb-1">
+                  📝 Summary
+                </h5>
+                <p>{summary || "No summary provided."}</p>
+              </section>
+
+              <section className="mb-4">
+                <h5 className="text-secondary border-bottom pb-1">
+                  💼 Experience
+                </h5>
+                <pre style={{ whiteSpace: "pre-wrap" }}>
+                  {experience || "No experience details available."}
+                </pre>
+              </section>
+
+              <section className="mb-4">
+                <h5 className="text-secondary border-bottom pb-1">
+                  🎓 Education
+                </h5>
+                <pre style={{ whiteSpace: "pre-wrap" }}>
+                  {education || "No education details available."}
+                </pre>
+              </section>
+
+              <section className="mb-4">
+                <h5 className="text-secondary border-bottom pb-1">🛠 Skills</h5>
+                <pre style={{ whiteSpace: "pre-wrap" }}>
+                  {skills || "No skills listed."}
+                </pre>
+              </section>
+
+              <footer className="text-end text-muted">
+                <small>
+                  Created on: {new Date(resume.created_at).toLocaleDateString()}
+                </small>
+              </footer>
             </div>
 
-            <hr />
-
-            <section className="mb-4">
-              <h5 className="text-secondary border-bottom pb-1">📝 Summary</h5>
-              <p>{summary || "No summary provided."}</p>
-            </section>
-
-            <section className="mb-4">
-              <h5 className="text-secondary border-bottom pb-1">💼 Experience</h5>
-              <pre style={{ whiteSpace: "pre-wrap" }}>
-                {experience || "No experience details available."}
-              </pre>
-            </section>
-
-            <section className="mb-4">
-              <h5 className="text-secondary border-bottom pb-1">🎓 Education</h5>
-              <pre style={{ whiteSpace: "pre-wrap" }}>
-                {education || "No education details available."}
-              </pre>
-            </section>
-
-            <section className="mb-4">
-              <h5 className="text-secondary border-bottom pb-1">🛠 Skills</h5>
-              <pre style={{ whiteSpace: "pre-wrap" }}>
-                {skills || "No skills listed."}
-              </pre>
-            </section>
-
-            {resume.feedback && (
-              <section className="mb-4">
-                <h5 className="text-secondary">💡 Feedback Suggestions</h5>
-                <ul>
-                  {resume.feedback.suggestions.map((s, i) => (
-                    <li key={i}>✅ {s}</li>
-                  ))}
-                </ul>
-              </section>
-            )}
-
-            <footer className="text-end text-muted">
-              <small>Created on: {new Date(resume.created_at).toLocaleDateString()}</small>
-            </footer>
-
             <div className="mt-3 d-flex justify-content-between">
-              <button className="btn btn-danger" onClick={() => handleDelete(resume.id)}>
+              <button
+                className="btn btn-outline-secondary"
+                onClick={() => downloadResume(resume.id)}
+              >
+                📥 Download PDF
+              </button>
+
+              <button
+                className="btn btn-danger"
+                onClick={() => handleDelete(resume.id)}
+              >
                 🗑️ Delete Resume
               </button>
               <button
@@ -229,9 +271,31 @@ function ResumeByUser() {
                     : optimizeResumeAI(resume.id)
                 }
               >
-                {activeResumeId === resume.id ? "🔙 Back to Original" : "🤖 Optimize with AI"}
+                {resume.isOptimizing ? (
+                  <span
+                    className="spinner-border spinner-border-sm"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
+                ) : activeResumeId === resume.id ? (
+                  "🔙 Back to Original"
+                ) : (
+                  "🤖 Optimize with AI"
+                )}
               </button>
             </div>
+
+            {/* FEEDBACK */}
+            {resume.feedback?.suggestions && activeResumeId === resume.id && (
+              <div className="feedback-section mt-4 p-4 bg-light rounded">
+                <h5 className="text-primary">💬 BatistAI Feedback</h5>
+                <ul>
+                  {resume.feedback.suggestions.map((s, i) => (
+                    <li key={i}>✅ {s}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         );
       })}

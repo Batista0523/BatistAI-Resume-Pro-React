@@ -20,7 +20,6 @@ const UserProfile = () => {
   const apiUrl = import.meta.env.VITE_BASE_URL;
 
   useEffect(() => {
-
     const fetchUserData = async () => {
       try {
         const response = await fetch(`${apiUrl}/users/${id}`);
@@ -62,59 +61,66 @@ const UserProfile = () => {
 
   return (
     <div className="container my-5">
-    <div className="d-flex justify-content-center">
-      <div className="card shadow-lg border-0 p-4 w-100" style={{ maxWidth: "800px" }}>
-        <div className="text-center mb-4">
-          <FaUserCircle size={120} className="text-secondary mb-3" />
-          <h2 className="fw-semibold">{user?.full_name}</h2>
-          <div className="my-2">
-            {user?.is_premium ? (
-              <span className="badge bg-success fs-6 px-3 py-2">🌟 Premium Member</span>
-            ) : (
-              <span className="badge bg-warning text-dark fs-6 px-3 py-2">🔓 Basic Member</span>
+      <div className="d-flex justify-content-center">
+        <div
+          className="card shadow-lg border-0 p-4 w-100"
+          style={{ maxWidth: "800px" }}
+        >
+          <div className="text-center mb-4">
+            <FaUserCircle size={120} className="text-secondary mb-3" />
+            <h2 className="fw-semibold">{user?.full_name}</h2>
+            <div className="my-2">
+              {user?.is_premium ? (
+                <span className="badge bg-success fs-6 px-3 py-2">
+                  🌟 Premium Member
+                </span>
+              ) : (
+                <span className="badge bg-warning text-dark fs-6 px-3 py-2">
+                  🔓 Basic Member
+                </span>
+              )}
+            </div>
+          </div>
+
+          <hr />
+
+          <div className="mb-3">
+            <p className="mb-1">
+              <strong>Email:</strong> {user?.email}
+            </p>
+            <p className="mb-0">
+              <strong>Account Created:</strong> Created on:{" "}
+              {user
+                ? new Date(user.created_at).toLocaleDateString()
+                : "Loading..."}
+            </p>
+          </div>
+
+          <hr />
+
+          <div className="d-flex flex-wrap gap-3 justify-content-center">
+         
+            {!user?.is_premium && (
+              <Link to="/payments">
+                <button className="btn btn-warning text-dark d-flex align-items-center px-4">
+                  <FaTrophy className="me-2" /> Upgrade to Premium
+                </button>
+              </Link>
             )}
+            <Link
+              to="/createResume"
+              className="btn btn-success d-flex align-items-center px-4 fw-bold"
+            >
+              ✍️ Create Your Resume
+            </Link>
           </div>
         </div>
-  
-        <hr />
-  
-        <div className="mb-3">
-          <p className="mb-1">
-            <strong>Email:</strong> {user?.email}
-          </p>
-          <p className="mb-0">
-            <strong>Account Created:</strong> {user?.created_at}
-          </p>
-        </div>
-  
-        <hr />
-  
-  
-        <div className="d-flex flex-wrap gap-3 justify-content-center">
-          <Link to="/edit-profile" className="btn btn-outline-primary d-flex align-items-center px-4">
-            <FaEdit className="me-2" /> Edit Profile
-          </Link>
-          {!user?.is_premium && (
-            <Link to='/payments'>
-            <button className="btn btn-warning text-dark d-flex align-items-center px-4">
-              
-              
-              <FaTrophy className="me-2" /> Upgrade to Premium
-            </button>
-              </Link>
-          )}
-          <Link to="/createResume" className="btn btn-success d-flex align-items-center px-4 fw-bold">
-            ✍️ Create Your Resume
-          </Link>
-        </div>
+      </div>
+
+      <div className="mt-5">
+        <ResumeByUser />
       </div>
     </div>
-  
-    <div className="mt-5">
-      <ResumeByUser />
-    </div>
-  </div>
-  
   );
 };
 

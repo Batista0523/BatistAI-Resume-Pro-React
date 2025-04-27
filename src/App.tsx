@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route,} from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import NavBar from "./components/NavBar";
-import Payments from "./pages/Payments";
 import UserProfile from "./pages/Userprofile";
 import ResumeForm from "./components/ResumeForm";
 import ResumeByUser from "./components/ResumeByUser";

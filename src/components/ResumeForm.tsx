@@ -52,11 +52,10 @@ function ResumeForm() {
 
     const formattedText = `
     Full Name: ${data.fullName}
-      Location: ${data.location}
+    Location: ${data.location}
     Summary: ${data.summary}
-     Skills: ${data.skills}
-
-Experience:
+    Skills: ${data.skills}
+    Experience:
 ${data.experience
   .map(
     (exp) =>
@@ -84,7 +83,7 @@ ${data.education
 
       if (result.success) {
         setStatusMessage(
-          `✅ Resume saved successfully! View it [here](/resumes/${result.resume_id})`
+          `✅ Resume created successfully!`
         );
         reset();
       } else {
@@ -240,13 +239,19 @@ ${data.education
         ➕ Add Education
       </button>
 
-
-     
-      <button style={{margin:"30px"}} type="submit" className="btn btn-primary">
-        💾 Save Resume
+      <button
+        style={{ margin: "30px" }}
+        type="submit"
+        className="btn btn-primary"
+      >
+        💾 Create Resume
       </button>
       <Link to={`/resumeByUser/${user?.id}`}>
-        <button style={{margin:"30px"}} type="submit" className="btn btn-primary ">
+        <button
+          style={{ margin: "30px" }}
+          type="submit"
+          className="btn btn-primary "
+        >
           💾 See Your Resume
         </button>
       </Link>

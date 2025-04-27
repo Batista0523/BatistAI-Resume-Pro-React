@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
+
 interface RegisterFormData {
   full_name: string;
   email: string;
@@ -79,14 +81,9 @@ function Register() {
   return (
     <div className="container mt-5" style={{ maxWidth: "500px" }}>
       <h2 className="mb-4 text-center">Register</h2>
-
-
       {error && <div className="alert alert-danger">{error}</div>}
       {success && <div className="alert alert-success">{success}</div>}
-
-
       <form onSubmit={handleSubmit}>
-   
         <div className="mb-3">
           <label className="form-label">Full Name</label>
           <input
@@ -98,8 +95,6 @@ function Register() {
             className="form-control"
           />
         </div>
-
-
         <div className="mb-3">
           <label className="form-label">Email Address</label>
           <input
@@ -111,8 +106,6 @@ function Register() {
             className="form-control"
           />
         </div>
-
- 
         <div className="mb-3">
           <label className="form-label">Password</label>
           <input
@@ -125,7 +118,6 @@ function Register() {
             minLength={6}
           />
         </div>
-
         <div className="mb-3">
           <label className="form-label">Confirm Password</label>
           <input
@@ -138,14 +130,9 @@ function Register() {
             minLength={6}
           />
         </div>
-
-      
-  
-   
         <button type="submit" className="btn btn-primary w-100">
           Register
         </button>
-        
       </form>
     </div>
   );
