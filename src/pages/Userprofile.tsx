@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { FaUserCircle, FaEdit, FaTrophy } from "react-icons/fa";
+import { FaUserCircle, FaTrophy } from "react-icons/fa";
 import ResumeByUser from "../components/ResumeByUser";
 
-interface UserProfile {
+interface UserProfiles {
   id: number;
   email: string;
   full_name: string;
@@ -12,7 +12,7 @@ interface UserProfile {
 }
 
 const UserProfile = () => {
-  const [user, setUser] = useState<UserProfile | null>(null);
+  const [user, setUser] = useState<UserProfiles | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -124,4 +124,4 @@ const UserProfile = () => {
   );
 };
 
-export default UserProfile;
+export default UserProfile ;
