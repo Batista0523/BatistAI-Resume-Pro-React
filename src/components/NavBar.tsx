@@ -1,6 +1,6 @@
-import "bootstrap/dist/css/bootstrap.min.css";
-import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { Navbar, Nav, Button } from 'react-bootstrap';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 function NavBar() {
   const { isAuthenticated, logout, user } = useAuth();
@@ -8,81 +8,69 @@ function NavBar() {
 
   const handleLogout = () => {
     logout();
-    navigate("/");
+    navigate('/');
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <Navbar expand="lg" bg="white" className="shadow-sm">
       <div className="container">
         <Link className="navbar-brand fw-bold text-dark" to="/">
           BatistAI Resume Optimizer
         </Link>
 
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-        >
-          <span className="navbar-toggler-icon"></span>
-        </button>
-
-        <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav ms-auto align-items-center gap-2">
-            <li className="nav-item">
+        <Navbar.Toggle aria-controls="navbarNav" />
+        <Navbar.Collapse id="navbarNav">
+          <Nav className="ms-auto align-items-center gap-2">
+            <Nav.Item>
               <Link className="nav-link text-dark" to="/">
                 Home
               </Link>
-            </li>
+            </Nav.Item>
             {isAuthenticated && user ? (
               <>
-                <li className="nav-item">
+                <Nav.Item>
                   <Link
                     className="nav-link text-dark"
                     to={`userProfile/${user.id}`}
                   >
                     Profile
                   </Link>
-                </li>
-                <li className="nav-item">
-                  <button
-                    onClick={handleLogout}
-                    className="btn btn-outline-danger btn-sm"
-                  >
+                </Nav.Item>
+                <Nav.Item>
+                  <Button onClick={handleLogout} variant="outline-danger" size="sm">
                     Logout
-                  </button>
-                </li>
+                  </Button>
+                </Nav.Item>
               </>
             ) : (
               <>
-                <li className="nav-item">
+                <Nav.Item>
                   <Link className="nav-link text-dark" to="/about">
                     About
                   </Link>
-                </li>
-
-                <li className="nav-item">
+                </Nav.Item>
+                <Nav.Item>
                   <Link
                     to="/login"
                     className="btn btn-outline-primary btn-sm px-4 py-2 rounded-0"
                   >
                     Login
                   </Link>
-                </li>
-                <li className="nav-item">
+                </Nav.Item>
+                <Nav.Item>
                   <Link
                     to="/register"
                     className="btn btn-primary btn-sm px-4 py-2 rounded-0 text-white"
                   >
                     Register
                   </Link>
-                </li>
+                </Nav.Item>
               </>
             )}
-          </ul>
-        </div>
+          </Nav>
+        </Navbar.Collapse>
       </div>
-    </nav>
+    </Navbar>
   );
 }
 

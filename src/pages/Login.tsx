@@ -52,8 +52,6 @@ function Login() {
       login(data.payload); 
       const userId = data.payload.id;
       setSuccess("Logged in successfully");
-
-     
       navigate(`/userProfile/${userId}`);
 
       setFormData({ email: "", password: "" });
