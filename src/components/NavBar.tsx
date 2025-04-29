@@ -44,11 +44,7 @@ function NavBar() {
               </>
             ) : (
               <>
-                <Nav.Item>
-                  <Link className="nav-link text-dark" to="/about">
-                    About
-                  </Link>
-                </Nav.Item>
+            
                 <Nav.Item>
                   <Link
                     to="/login"
