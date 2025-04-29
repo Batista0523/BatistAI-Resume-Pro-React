@@ -20,7 +20,7 @@ function Home() {
           </h1>
           <p className="lead mb-4 mx-auto" style={{ maxWidth: "720px" }}>
             Elevate your job search with our AI-powered resume optimization.
-            Upload your resume and unlock professional feedback instantly.
+            Create your resume and unlock professional feedback instantly.
           </p>
           {!isAuthenticated ? (
             <Link
@@ -124,15 +124,8 @@ function Home() {
       </section>
       <footer className="bg-dark text-white py-4">
         <div className="container d-flex flex-column flex-md-row justify-content-between align-items-center text-center text-md-start">
-          <p className="mb-2 mb-md-0">&copy; 2025 Resume Optimization AI</p>
-          <div>
-            <a href="/terms" className="text-white me-4 text-decoration-none">
-              Terms & Conditions
-            </a>
-            <a href="/privacy" className="text-white text-decoration-none">
-              Privacy Policy
-            </a>
-          </div>
+          <p className="mb-2 mb-md-0">&copy; 2025 Resume BatistAI</p>
+        
         </div>
       </footer>
     </div>
