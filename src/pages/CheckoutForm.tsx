@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import {
@@ -89,7 +88,6 @@ function CheckoutFormInner() {
         through Stripe, ensuring that your information is safe and protected.
       </p>
 
-    
       <div className="form-group mb-3">
         <label className="font-weight-bold">Card Information</label>
         <div className="card-element-container">
@@ -129,6 +127,13 @@ function CheckoutFormInner() {
           "Pay $0.99"
         )}
       </button>
+
+      <p className="text-muted text-center mb-4">
+        <strong>NOTE:</strong> Because the database is on a free plan, you might
+        sometimes need to log out and log back in for the Optimize function to
+        work properly. Occasionally, the database may not immediately send the
+        updated user information to the frontend.
+      </p>
 
       {message && <div className="alert alert-danger mt-3">{message}</div>}
     </form>
