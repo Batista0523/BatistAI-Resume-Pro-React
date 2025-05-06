@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { FaUserCircle, FaTrophy } from "react-icons/fa";
 import ResumeByUser from "../components/ResumeByUser";
-
+import { motion } from "framer-motion";
 interface UserProfiles {
   id: number;
   email: string;
@@ -60,68 +60,101 @@ const UserProfile = () => {
   }
 
   return (
-    <div className="container my-5">
-      <div className="d-flex justify-content-center">
+    <section className="container my-5">
+      <motion.div
+        className="d-flex justify-content-center"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
         <div
-          className="card shadow-lg border-0 p-4 w-100"
+          className="card shadow-lg border-0 p-5 w-100 bg-white rounded-4"
           style={{ maxWidth: "800px" }}
         >
           <div className="text-center mb-4">
-            <FaUserCircle size={120} className="text-secondary mb-3" />
-            <h2 className="fw-semibold">{user?.full_name}</h2>
-            <div className="my-2">
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.4 }}
+            >
+              <FaUserCircle size={120} className="text-secondary mb-3" />
+            </motion.div>
+  
+            <h2 className="fw-bold text-primary">{user?.full_name}</h2>
+  
+            <motion.div
+              className="my-3"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+            >
               {user?.is_premium ? (
-                <span className="badge bg-success fs-6 px-3 py-2">
+                <span className="badge bg-success fs-6 px-3 py-2 rounded-pill">
                   🌟 Premium Member
                 </span>
               ) : (
-                <span className="badge bg-warning text-dark fs-6 px-3 py-2">
+                <span className="badge bg-warning text-dark fs-6 px-3 py-2 rounded-pill">
                   🔓 Basic Member
                 </span>
               )}
-            </div>
+            </motion.div>
           </div>
-
+  
           <hr />
-
-          <div className="mb-3">
+  
+          <motion.div
+            className="mb-4"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+          >
             <p className="mb-1">
               <strong>Email:</strong> {user?.email}
             </p>
             <p className="mb-0">
-              <strong>Account Created:</strong> Created on:{" "}
+              <strong>Account Created:</strong>{" "}
               {user
                 ? new Date(user.created_at).toLocaleDateString()
                 : "Loading..."}
             </p>
-          </div>
-
+          </motion.div>
+  
           <hr />
-
-          <div className="d-flex flex-wrap gap-3 justify-content-center">
-         
+  
+          <motion.div
+            className="d-flex flex-wrap gap-3 justify-content-center mt-3"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+          >
             {!user?.is_premium && (
               <Link to="/payments">
-                <button className="btn btn-warning text-dark d-flex align-items-center px-4">
+                <button className="btn btn-warning text-dark d-flex align-items-center px-4 py-2 rounded-3 shadow-sm">
                   <FaTrophy className="me-2" /> Upgrade to Premium
                 </button>
               </Link>
             )}
             <Link
               to="/createResume"
-              className="btn btn-success d-flex align-items-center px-4 fw-bold"
+              className="btn btn-success d-flex align-items-center px-4 py-2 fw-bold rounded-3 shadow-sm"
             >
               ✍️ Create Your Resume
             </Link>
-          </div>
+          </motion.div>
         </div>
-      </div>
-
-      <div className="mt-5">
+      </motion.div>
+  
+      <motion.div
+        className="mt-5"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.6 }}
+      >
         <ResumeByUser />
-      </div>
-    </div>
+      </motion.div>
+    </section>
   );
+  
 };
 
 export default UserProfile ;

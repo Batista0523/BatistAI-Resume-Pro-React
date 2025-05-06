@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { Link } from "react-router-dom";
-
+import { motion } from "framer-motion";
 type ResumeFormData = {
   fullName: string;
   location: string;
@@ -96,59 +96,72 @@ ${data.education
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="container mt-5">
-      <h2 className="mb-4">
+    <motion.form
+      onSubmit={handleSubmit(onSubmit)}
+      className="container mt-5"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+    >
+      <h2 className="mb-4 text-primary fw-bold">
         Hello{" "}
         {user?.full_name
           ? `${user.full_name}, let's build your resume`
           : "Create Your Resume"}
       </h2>
-
-      {statusMessage && <div className="alert alert-info">{statusMessage}</div>}
-
+  
+      {statusMessage && (
+        <div className="alert alert-info shadow-sm">{statusMessage}</div>
+      )}
+  
       <div className="mb-3">
         <label className="form-label">Full Name</label>
         <input
-          className="form-control"
+          className="form-control rounded-3 shadow-sm"
           {...register("fullName")}
           defaultValue={user?.full_name || ""}
         />
       </div>
-
+  
       <div className="mb-3">
         <label className="form-label">Location</label>
         <input
-          className="form-control"
+          className="form-control rounded-3 shadow-sm"
           {...register("location")}
           required
           placeholder="e.g., New York, NY"
         />
       </div>
-
+  
       <div className="mb-3">
         <label className="form-label">Professional Summary</label>
         <textarea
-          className="form-control"
+          className="form-control rounded-3 shadow-sm"
           {...register("summary")}
           rows={4}
           required
           placeholder="e.g., Full-stack developer with 3+ years of experience..."
         />
       </div>
-
+  
       <div className="mb-3">
         <label className="form-label">Skills (comma separated)</label>
         <input
-          className="form-control"
+          className="form-control rounded-3 shadow-sm"
           {...register("skills")}
           required
           placeholder="e.g., JavaScript, React, PostgreSQL"
         />
       </div>
-
-      <h4 className="mt-4">Work Experience</h4>
+  
+      <h4 className="mt-5 mb-3 text-secondary">Work Experience</h4>
       {expFields.map((field, index) => (
-        <div key={field.id} className="border p-3 mb-3 rounded">
+        <motion.div
+          key={field.id}
+          className="border p-3 mb-4 rounded-4 bg-light shadow-sm"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
           <div className="mb-2">
             <label className="form-label">Company</label>
             <input
@@ -182,11 +195,12 @@ ${data.education
               placeholder="Describe what you did..."
             />
           </div>
-        </div>
+        </motion.div>
       ))}
+  
       <button
         type="button"
-        className="btn btn-outline-secondary mb-3"
+        className="btn btn-outline-secondary mb-4 rounded-3"
         onClick={() =>
           addExp({
             id: uuidv4(),
@@ -199,10 +213,15 @@ ${data.education
       >
         ➕ Add Experience
       </button>
-
-      <h4 className="mt-4">Education</h4>
+  
+      <h4 className="mt-5 mb-3 text-secondary">Education</h4>
       {eduFields.map((field, index) => (
-        <div key={field.id} className="border p-3 mb-3 rounded">
+        <motion.div
+          key={field.id}
+          className="border p-3 mb-4 rounded-4 bg-light shadow-sm"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
           <div className="mb-2">
             <label className="form-label">School</label>
             <input
@@ -227,36 +246,32 @@ ${data.education
               placeholder="e.g., 2024"
             />
           </div>
-        </div>
+        </motion.div>
       ))}
+  
       <button
         type="button"
-        className="btn btn-outline-secondary mb-4"
+        className="btn btn-outline-secondary mb-4 rounded-3"
         onClick={() =>
           addEdu({ id: uuidv4(), school: "", degree: "", year: "" })
         }
       >
         ➕ Add Education
       </button>
-
-      <button
-        style={{ margin: "30px" }}
-        type="submit"
-        className="btn btn-primary"
-      >
-        💾 Create Resume
-      </button>
-      <Link to={`/resumeByUser/${user?.id}`}>
-        <button
-          style={{ margin: "30px" }}
-          type="submit"
-          className="btn btn-primary "
-        >
-          💾 See Your Resume
+  
+      <div className="d-flex flex-wrap gap-3 justify-content-center mt-4">
+        <button type="submit" className="btn btn-primary px-4 py-2 rounded-3">
+          💾 Create Resume
         </button>
-      </Link>
-    </form>
+        <Link to={`/resumeByUser/${user?.id}`}>
+          <button type="button" className="btn btn-outline-primary px-4 py-2 rounded-3">
+            📄 See Your Resume
+          </button>
+        </Link>
+      </div>
+    </motion.form>
   );
+  
 }
 
 export default ResumeForm;

@@ -8,7 +8,7 @@ import {
 } from "@stripe/react-stripe-js";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-
+import { motion } from "framer-motion";
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY!);
 const url = import.meta.env.VITE_BASE_URL;
 

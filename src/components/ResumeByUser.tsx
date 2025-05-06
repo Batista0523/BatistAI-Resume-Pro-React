@@ -3,6 +3,10 @@ import { useAuth } from "../context/AuthContext";
 import html2pdf from "html2pdf.js";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+
+
+
 interface Resume {
   id: number;
   user_id: number;
@@ -168,32 +172,38 @@ function ResumeByUser() {
   return (
     <div className="container mt-5 p-4">
       <h2 className="text-center mb-4">📄 Your Resumes</h2>
-
+  
       <div className="mb-4 text-center">
         <label className="me-2 fw-bold">Choose Template:</label>
         <select
           className="form-select w-auto d-inline-block"
           value={template}
-          onChange={(e) => setTemplate(e.target.value as "classic" | "modern")}
+          onChange={(e) =>
+            setTemplate(e.target.value as "classic" | "modern")
+          }
         >
-          <option value="classic"> Classic</option>
-          <option value="modern"> Modern</option>
+          <option value="classic">Classic</option>
+          <option value="modern">Modern</option>
         </select>
       </div>
-
-      {resumes.map((resume) => {
+  
+      {resumes.map((resume, index) => {
         const isOptimizedView =
           activeResumeId === resume.id && resume.optimized_text;
         const text = isOptimizedView
           ? resume.optimized_text!
           : resume.original_text;
+  
         const { summary, experience, education, skills } = parseSections(text);
-
+  
         return (
-          <div
+          <motion.div
             key={resume.id}
             id={`resume-cv-${resume.id}`}
             className="p-5 mb-5 shadow rounded"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.1, duration: 0.5 }}
             style={{
               fontFamily:
                 template === "classic" ? "Georgia, serif" : "Arial, sans-serif",
@@ -206,70 +216,98 @@ function ResumeByUser() {
           >
             <div id={`resume-cv-content-${resume.id}`}>
               <div className="d-flex justify-content-between align-items-center mb-3">
-                <h2 className="fw-bold text-primary">{user.full_name}</h2>
+                <motion.h2
+                  className="fw-bold text-primary"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  {user.full_name}
+                </motion.h2>
               </div>
               <hr />
-
-              <section className="mb-4">
-                <h5 className="text-secondary border-bottom pb-1">
-                  📝 Summary
-                </h5>
+  
+              <motion.section
+                className="mb-4"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.3 }}
+              >
+                <h5 className="text-secondary border-bottom pb-1">📝 Summary</h5>
                 <p>{summary || "No summary provided."}</p>
-              </section>
-
-              <section className="mb-4">
-                <h5 className="text-secondary border-bottom pb-1">
-                  💼 Experience
-                </h5>
+              </motion.section>
+  
+              <motion.section
+                className="mb-4"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.4 }}
+              >
+                <h5 className="text-secondary border-bottom pb-1">💼 Experience</h5>
                 <pre style={{ whiteSpace: "pre-wrap" }}>
                   {experience || "No experience details available."}
                 </pre>
-              </section>
-
-              <section className="mb-4">
-                <h5 className="text-secondary border-bottom pb-1">
-                  🎓 Education
-                </h5>
+              </motion.section>
+  
+              <motion.section
+                className="mb-4"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.5 }}
+              >
+                <h5 className="text-secondary border-bottom pb-1">🎓 Education</h5>
                 <pre style={{ whiteSpace: "pre-wrap" }}>
                   {education || "No education details available."}
                 </pre>
-              </section>
-
-              <section className="mb-4">
+              </motion.section>
+  
+              <motion.section
+                className="mb-4"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.6 }}
+              >
                 <h5 className="text-secondary border-bottom pb-1">🛠 Skills</h5>
                 <pre style={{ whiteSpace: "pre-wrap" }}>
                   {skills || "No skills listed."}
                 </pre>
-              </section>
-
+              </motion.section>
+  
               <footer className="text-end text-muted">
                 <small>
                   Created on: {new Date(resume.created_at).toLocaleDateString()}
                 </small>
               </footer>
             </div>
-
+  
             <div className="mt-3 d-flex justify-content-between">
-              <button
+              <motion.button
                 className="btn btn-outline-secondary"
                 onClick={() => downloadResume(resume.id)}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
                 📥 Download PDF
-              </button>
-
-              <button
+              </motion.button>
+  
+              <motion.button
                 className="btn btn-danger"
                 onClick={() => handleDelete(resume.id)}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
                 🗑️ Delete Resume
-              </button>
-              <button
+              </motion.button>
+  
+              <motion.button
                 className="btn btn-outline-primary"
                 onClick={() =>
                   activeResumeId === resume.id
                     ? setActiveResumeId(null)
                     : optimizeResumeAI(resume.id)
                 }
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
                 {resume.isOptimizing ? (
                   <span
@@ -282,21 +320,26 @@ function ResumeByUser() {
                 ) : (
                   "🤖 Optimize with AI"
                 )}
-              </button>
+              </motion.button>
             </div>
-
-            {/* FEEDBACK */}
-            {resume.feedback?.suggestions && activeResumeId === resume.id && (
-              <div className="feedback-section mt-4 p-4 bg-light rounded">
-                <h5 className="text-primary">💬 BatistAI Feedback</h5>
-                <ul>
-                  {resume.feedback.suggestions.map((s, i) => (
-                    <li key={i}>✅ {s}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
+  
+            {resume.feedback?.suggestions &&
+              activeResumeId === resume.id && (
+                <motion.div
+                  className="feedback-section mt-4 p-4 bg-light rounded"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.7 }}
+                >
+                  <h5 className="text-primary">💬 BatistAI Feedback</h5>
+                  <ul>
+                    {resume.feedback.suggestions.map((s, i) => (
+                      <li key={i}>✅ {s}</li>
+                    ))}
+                  </ul>
+                </motion.div>
+              )}
+          </motion.div>
         );
       })}
     </div>
